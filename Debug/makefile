@@ -41,8 +41,8 @@ Ikarus.list \
 all: Ikarus.elf secondary-outputs
 
 # Tool invocations
-Ikarus.elf: $(OBJS) $(USER_OBJS) /home/joaquin/Atollic/TrueSTUDIO/STM32_workspace_9.3/Ikarus/STM32F103C8TX_FLASH.ld
-	arm-none-eabi-gcc -o "Ikarus.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"/home/joaquin/Atollic/TrueSTUDIO/STM32_workspace_9.3/Ikarus/STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Ikarus.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Ikarus.elf: $(OBJS) $(USER_OBJS) C:\Users\joaquin\Documents\GitHub\STM32_IKARUS\STM32F103C8TX_FLASH.ld
+	arm-none-eabi-gcc -o "Ikarus.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"C:\Users\joaquin\Documents\GitHub\STM32_IKARUS\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Ikarus.map" -Wl,--gc-sections -static --specs=nano.specs -mfloat-abi=soft -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
