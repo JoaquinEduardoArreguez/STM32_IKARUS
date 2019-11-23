@@ -92,6 +92,12 @@ extern USBD_CDC_ItfTypeDef USBD_Interface_fops_FS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 
+
+//Exported macros to use received data in receive_fs
+extern uint8_t received_data[];
+extern uint32_t received_data_size;
+extern uint32_t receive_total;
+
 /* USER CODE END EXPORTED_VARIABLES */
 
 /**

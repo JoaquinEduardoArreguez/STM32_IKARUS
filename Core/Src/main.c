@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 
 /* Includes ------------------------------------------------------------------*/
+
 #include "main.h"
 #include "i2c.h"
 #include "spi.h"
@@ -28,6 +29,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+// Include to use Receive_fs data in code
+#include "usbd_cdc_if.h"
 
 /* USER CODE END Includes */
 
@@ -48,6 +52,9 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+//var to use USB
+USBD_HandleTypeDef hUsbDeviceFS;
 
 unsigned int position;
 
@@ -72,11 +79,12 @@ HAL_StatusTypeDef HAL_TIM_PWM_Start_AllChannels(TIM_HandleTypeDef *htim) {
 	if (HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1) == HAL_OK
 			&& HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1) == HAL_OK
 			&& HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1) == HAL_OK
-			&& HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1) == HAL_OK){
+			&& HAL_TIM_PWM_Start(htim, TIM_CHANNEL_1) == HAL_OK) {
 		return HAL_OK;
 	}
 	return HAL_ERROR;
-};
+}
+;
 
 void set_pmw_handler_all_channels_pulse_width(TIM_HandleTypeDef handler,
 		unsigned int pulseWidth) {
@@ -84,7 +92,8 @@ void set_pmw_handler_all_channels_pulse_width(TIM_HandleTypeDef handler,
 	handler.Instance->CCR2 = pulseWidth;
 	handler.Instance->CCR3 = pulseWidth;
 	handler.Instance->CCR4 = pulseWidth;
-};
+}
+;
 
 /* USER CODE END 0 */
 
@@ -141,18 +150,23 @@ int main(void) {
 	HAL_TIM_PWM_Start_AllChannels(&htim3);
 	HAL_TIM_PWM_Start_AllChannels(&htim4);
 
-	uint8_t Buf[] = "We are ON baby\n";
-	CDC_Transmit_FS(Buf, sizeof(Buf));
+	//if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED
+
+	if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
+		uint8_t Buf[] = "We are ON baby\n";
+		CDC_Transmit_FS(Buf, sizeof(Buf));
+	}
 
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-		/* USER CODE END WHILE */
-
-		uint8_t Buf1[] = "We are Alive!\n";
-		CDC_Transmit_FS(Buf1, sizeof(Buf1));
+		if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
+			uint8_t Buf[] = "\r\nWe are ON baby\r\n";
+			CDC_Transmit_FS(Buf, sizeof(Buf));
+			CDC_Transmit_FS(received_data, received_data_size);
+		}
 
 		HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
 
@@ -170,8 +184,8 @@ int main(void) {
 			HAL_Delay(600);
 		}
 
-		HAL_Delay(0.5);
-
+		HAL_Delay(5000);
+		/* USER CODE END WHILE */
 		/* USER CODE BEGIN 3 */
 	}
 	/* USER CODE END 3 */
