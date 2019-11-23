@@ -23,6 +23,7 @@
 #include "usbd_cdc_if.h"
 
 /* USER CODE BEGIN INCLUDE */
+#include <string.h>
 
 /* USER CODE END INCLUDE */
 
@@ -35,12 +36,14 @@
 
 uint8_t buffer[7];
 
-
-
 // Private variables to copy Receive Buffer, to use in code
 uint8_t received_data[100];
 uint32_t received_data_size;
 uint32_t receive_total = 0;
+
+// Another buffer variables
+
+uint8_t *echoBuff;
 
 /* USER CODE END PV */
 
@@ -75,16 +78,13 @@ uint32_t receive_total = 0;
 /* Define size for the receive and transmit buffer over CDC */
 /* It's up to user to redefine and/or remove those define */
 
-
 //#define APP_RX_DATA_SIZE  1000
 //#define APP_TX_DATA_SIZE  1000
-
 /* USER CODE END PRIVATE_DEFINES */
 
 // Redefined Data sizes
 #define APP_RX_DATA_SIZE  64
 #define APP_TX_DATA_SIZE  64
-
 
 /**
  * @}
@@ -291,9 +291,13 @@ static int8_t CDC_Receive_FS(uint8_t *Buf, uint32_t *Len) {
 	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 
 	// This function CDC_Receive_FS is a callback function invoked when data is received - add 3 extra lines of code to copy the data to my own buffer
-	received_data_size = *Len;
-	memcpy(received_data, Buf, received_data_size);
-	receive_total += received_data_size;
+	memcpy(received_data,Buf,*Len);
+
+	if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
+		strcat(received_data,"\n\r");
+		CDC_Transmit_FS(received_data, sizeof(strlen(received_data)));
+	}
+
 
 	return (USBD_OK);
 	/* USER CODE END 6 */

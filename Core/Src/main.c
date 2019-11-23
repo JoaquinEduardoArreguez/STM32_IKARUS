@@ -150,23 +150,18 @@ int main(void) {
 	HAL_TIM_PWM_Start_AllChannels(&htim3);
 	HAL_TIM_PWM_Start_AllChannels(&htim4);
 
-	//if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED
-
-	if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
-		uint8_t Buf[] = "We are ON baby\n";
-		CDC_Transmit_FS(Buf, sizeof(Buf));
-	}
 
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
+		/*
 		if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
 			uint8_t Buf[] = "\r\nWe are ON baby\r\n";
 			CDC_Transmit_FS(Buf, sizeof(Buf));
-			CDC_Transmit_FS(received_data, received_data_size);
 		}
+		*/
 
 		HAL_GPIO_TogglePin(LED_BUILTIN_GPIO_Port, LED_BUILTIN_Pin);
 
