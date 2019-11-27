@@ -290,14 +290,23 @@ static int8_t CDC_Receive_FS(uint8_t *Buf, uint32_t *Len) {
 	USBD_CDC_SetRxBuffer(&hUsbDeviceFS, &Buf[0]);
 	USBD_CDC_ReceivePacket(&hUsbDeviceFS);
 
-	// This function CDC_Receive_FS is a callback function invoked when data is received - add 3 extra lines of code to copy the data to my own buffer
-	memcpy(received_data,Buf,*Len);
+	// Handle Buf
+	uint32_t newLen = *Len+3;
+	uint8_t BufAux[*Len+3];
+	memcpy(&BufAux[0], Buf, *Len);
+	BufAux[*Len] = '\r';
+	BufAux[*Len+1] = '\n';
+	BufAux[*Len+2] = '\0';
 
 	if (hUsbDeviceFS.dev_state == USBD_STATE_CONFIGURED) {
-		strcat(received_data,"\n\r");
-		CDC_Transmit_FS(received_data, sizeof(strlen(received_data)));
+		CDC_Transmit_FS(BufAux, sizeof(BufAux));
 	}
 
+	// Now we can split the data in "command" and "parameters" ~~
+
+	for (uint8_t i=0;i<newLen;i++){
+
+	}
 
 	return (USBD_OK);
 	/* USER CODE END 6 */
